@@ -1,0 +1,11 @@
+go 1.21
+
+toolchain go1.24.0
+
+use (
+	./project-api
+	./project-common
+	./project-grpc
+	./project-project
+	./project-user
+)
