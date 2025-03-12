@@ -6,7 +6,6 @@ import (
 	"github.com/jinzhu/copier"
 	"test.com/project-common/encrypts"
 	"test.com/project-grpc/account"
-	"test.com/project-grpc/task"
 	"test.com/project-project/internal/dao"
 	"test.com/project-project/internal/database/tran"
 	"test.com/project-project/internal/domain"
@@ -14,7 +13,7 @@ import (
 )
 
 type AccountService struct {
-	task.UnimplementedTaskServiceServer
+	account.UnimplementedAccountServiceServer
 	cache             repo.Cache
 	transaction       tran.Transaction
 	accountDomain     domain.AccountDomain

@@ -15,14 +15,14 @@ type DepartmentDomain struct {
 	departmentRepo repo.DepartmentRepo
 }
 
-func (d *DepartmentDomain) FindDepartmentById(id int64) (*data.Department, *errs.BError) {
+func (d *DepartmentDomain) FindDepartmentById(id int64) (*data.DepartmentDisplay, *errs.BError) {
 	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 	dp, err := d.departmentRepo.FindDepartmentById(c, id)
 	if err != nil {
 		return nil, model.DBError
 	}
-	return dp, nil
+	return dp.ToDisplay(), nil
 }
 
 func (d *DepartmentDomain) List(organizationCode int64, parentDepartmentCode int64, page int64, size int64) ([]*data.DepartmentDisplay, int64, *errs.BError) {
@@ -42,7 +42,6 @@ func (d *DepartmentDomain) Save(
 	departmentCode int64,
 	parentDepartmentCode int64,
 	name string) (*data.DepartmentDisplay, *errs.BError) {
-
 	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 	dpm, err := d.departmentRepo.FindDepartment(c, organizationCode, parentDepartmentCode, name)

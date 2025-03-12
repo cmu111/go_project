@@ -34,6 +34,7 @@ func (*RouterProject) Route(r *gin.Engine) {
 	group.POST("/project_collect/collect", h.collectProject)
 	group.POST("/project/edit", h.editProject)
 	group.POST("/project/getLogBySelfProject", h.getLogBySelfProject)
+	group.POST("/node", h.nodeList)
 
 	t := NewHandlerTask()
 	group.POST("/task_stages", t.TaskStages)
@@ -51,6 +52,18 @@ func (*RouterProject) Route(r *gin.Engine) {
 	group.POST("/task/taskSources", t.taskSources)
 	group.POST("/task/createComment", t.createComment)
 
-	a:=NewHandlerAccount()
-	group.POST("/project/account", a.account)
+	a := NewHandlerAccount()
+	group.POST("/account", a.account)
+
+	d := NewHandlerDepartment()
+	group.POST("/department", d.list)
+	group.POST("/department/save", d.save)
+	group.POST("/department/read", d.read)
+
+	auth := NewHandlerAuth()
+	group.POST("/auth", auth.Auth)
+	group.POST("/auth/apply", auth.apply)
+	m := NewHandlerMenu()
+	group.POST("/menu/menu", m.GetMenu)
+
 }
