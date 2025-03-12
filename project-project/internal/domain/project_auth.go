@@ -6,6 +6,8 @@ import (
 	"test.com/project-common/errs"
 	"test.com/project-project/internal/dao"
 	"test.com/project-project/internal/data"
+	"test.com/project-project/internal/database"
+	"test.com/project-project/internal/database/tran"
 	"test.com/project-project/internal/repo"
 	"test.com/project-user/pkg/model"
 )
@@ -15,6 +17,7 @@ type ProjectAuthDomain struct {
 	userRpcDomain         *UserRpcDomain
 	projectAuthNodeDomain *ProjectAuthNodeDomain
 	nodeDomain            *Node
+	transaction           tran.Transaction
 }
 
 func NewProjectAuthDomain() *ProjectAuthDomain {
@@ -23,7 +26,18 @@ func NewProjectAuthDomain() *ProjectAuthDomain {
 		userRpcDomain:         NewUserRpcDomain(),
 		projectAuthNodeDomain: NewProjectAuthNodeDomain(),
 		nodeDomain:            NewNode(),
+		transaction:           dao.NewTransaction(),
 	}
+}
+func (d ProjectAuthDomain) Save(authId int64, nodes []string) error {
+	err := d.transaction.Action(func(conn database.DbConn) error {
+		err := d.projectAuthNodeDomain.Save(conn, authId, nodes)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
 }
 
 func (d *ProjectAuthDomain) AuthList(orgCode int64) ([]*data.ProjectAuthDisplay, *errs.BError) {

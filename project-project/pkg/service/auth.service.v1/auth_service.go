@@ -56,19 +56,12 @@ func (a *AuthService) Apply(ctx context.Context, msg *auth.AuthReqMessage) (*aut
 		copier.Copy(&prList, list)
 		return &auth.ApplyResponse{List: prList, CheckedList: checkedList}, nil
 	}
-	// if msg.Action == "save" {
-	// 	//先删除 project_auth_node表 在新增  事务
-	// 	//保存
-	// 	nodes := msg.Nodes
-	// 	//先删在存 加事务
-	// 	authId := msg.AuthId
-	// 	err := a.transaction.Action(func(conn database.DbConn) error {
-	// 		err := a.projectAuthDomain.Save(conn, authId, nodes)
-	// 		return err
-	// 	})
-	// 	if err != nil {
-	// 		return nil, errs.GrpcError(err.(*errs.BError))
-	// 	}
-	// }
+	if msg.Action == "save" {
+		authId := msg.AuthId
+		err := a.projectAuthDomain.Save(authId, msg.Nodes)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &auth.ApplyResponse{}, nil
 }
